@@ -59,6 +59,9 @@ read -p "Enter the desired GCS bucket name (must be globally unique): " BUCKET_N
 # Prompt the user for the local folder path to upload
 read -p "Enter the path to the local folder you want to upload: " LOCAL_FOLDER_PATH
 
+read -p "Enter the project ID: " PROJECT_ID
+
+
 # --- Validate Input ---
 # Check if bucket name is provided
 if [[ -z "$BUCKET_NAME" ]]; then
@@ -98,7 +101,7 @@ echo "Attempting to upload folder: $LOCAL_FOLDER_PATH to $GCS_BUCKET_URI"
 echo "-------------------------------------------"
 
 # --- Upload Folder Contents ---
-# If you want the folder itself (e.g., `gs://bucket/my_folder/...`), remember to remove the trailing slash in "$LOCAL_FOLDER_PATH"
+# If you want the folder itself (e.g., `gs://bucket/my_folder/...`), remove the trailing slash: "$LOCAL_FOLDER_PATH"
 gsutil -m cp -r "$LOCAL_FOLDER_PATH" "$GCS_BUCKET_URI/"
 if [[ $? -ne 0 ]]; then
     echo "Error: Failed to upload contents of $LOCAL_FOLDER_PATH."
@@ -111,5 +114,33 @@ echo "-------------------------------------------"
 echo "Successfully uploaded contents of '$LOCAL_FOLDER_PATH' to '$GCS_BUCKET_URI'."
 echo "Script finished."
 echo "-------------------------------------------"
+
+
+
+
+echo "-------------------------------------------"
+echo "Attempting to set project ID to: $PROJECT_ID"
+echo "-------------------------------------------"
+
+gcloud config set project $PROJECT_ID
+
+if [ $? -eq 0 ]; then
+  echo "Set command executed successfully."
+  echo "Verifying the currently set project ID..."
+
+
+  CURRENT_PROJECT=$(gcloud config get-value project)
+  echo "Current project ID is configured as: $CURRENT_PROJECT"
+  
+  if [ "$CURRENT_PROJECT" = "$PROJECT_ID" ]; then
+    echo "Verification successful: Project ID matches."
+  else
+    echo "Verification failed: Set project ID ($CURRENT_PROJECT) does not match the intended ID ($PROJECT_ID)."
+  fi
+else
+  echo "Error: Failed to set the project ID."
+fi
+
+
 
 exit 0

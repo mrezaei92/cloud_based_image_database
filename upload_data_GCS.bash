@@ -98,7 +98,7 @@ echo "Attempting to upload folder: $LOCAL_FOLDER_PATH to $GCS_BUCKET_URI"
 echo "-------------------------------------------"
 
 # --- Upload Folder Contents ---
-# If you want the folder itself (e.g., `gs://bucket/my_folder/...`), remove the trailing slash: "$LOCAL_FOLDER_PATH"
+# If you want the folder itself (e.g., `gs://bucket/my_folder/...`), remember to remove the trailing slash in "$LOCAL_FOLDER_PATH"
 gsutil -m cp -r "$LOCAL_FOLDER_PATH" "$GCS_BUCKET_URI/"
 if [[ $? -ne 0 ]]; then
     echo "Error: Failed to upload contents of $LOCAL_FOLDER_PATH."

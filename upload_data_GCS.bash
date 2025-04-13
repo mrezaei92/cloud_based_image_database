@@ -62,6 +62,32 @@ read -p "Enter the path to the local folder you want to upload: " LOCAL_FOLDER_P
 read -p "Enter the project ID: " PROJECT_ID
 
 
+
+echo "-------------------------------------------"
+echo "Attempting to set project ID to: $PROJECT_ID"
+echo "-------------------------------------------"
+
+gcloud config set project $PROJECT_ID
+
+if [ $? -eq 0 ]; then
+  echo "Set command executed successfully."
+  echo "Verifying the currently set project ID..."
+
+
+  CURRENT_PROJECT=$(gcloud config get-value project)
+  echo "Current project ID is configured as: $CURRENT_PROJECT"
+  
+  if [ "$CURRENT_PROJECT" = "$PROJECT_ID" ]; then
+    echo "Verification successful: Project ID matches."
+  else
+    echo "Verification failed: Set project ID ($CURRENT_PROJECT) does not match the intended ID ($PROJECT_ID)."
+  fi
+else
+  echo "Error: Failed to set the project ID."
+fi
+
+
+
 # --- Validate Input ---
 # Check if bucket name is provided
 if [[ -z "$BUCKET_NAME" ]]; then
@@ -118,28 +144,6 @@ echo "-------------------------------------------"
 
 
 
-echo "-------------------------------------------"
-echo "Attempting to set project ID to: $PROJECT_ID"
-echo "-------------------------------------------"
-
-gcloud config set project $PROJECT_ID
-
-if [ $? -eq 0 ]; then
-  echo "Set command executed successfully."
-  echo "Verifying the currently set project ID..."
-
-
-  CURRENT_PROJECT=$(gcloud config get-value project)
-  echo "Current project ID is configured as: $CURRENT_PROJECT"
-  
-  if [ "$CURRENT_PROJECT" = "$PROJECT_ID" ]; then
-    echo "Verification successful: Project ID matches."
-  else
-    echo "Verification failed: Set project ID ($CURRENT_PROJECT) does not match the intended ID ($PROJECT_ID)."
-  fi
-else
-  echo "Error: Failed to set the project ID."
-fi
 
 
 

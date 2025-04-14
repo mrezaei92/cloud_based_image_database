@@ -1,7 +1,7 @@
-<div style="display: flex; justify-content: space-around;">
-  <img src="imgs/client1.png" alt="E.g screenshot from client" width="300"/>
-  <img src=imgs/client2.png" alt="E.g screenshot from client" width="300"/>
-</div>
+<img src="imgs/client1.png" alt="E.g screenshot from client">
+
+<br/> <img src="imgs/client2.png" alt="E.g screenshot from client">
+
 
 # Person ID Search with DeepFace, Vertex AI Vector Search, and Streamlit
 

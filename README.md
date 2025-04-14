@@ -172,11 +172,15 @@ Deploy the container image from Artifact Registry to Cloud Run using the `deploy
 * **Provide Service Name:** You will be prompted to enter a name for your new Cloud Run service (e.g., `face-search-service`).
 * **Deployment:** The script then executes `gcloud run deploy` with the following settings:
     * `--platform=managed`
-    * `--memory=8Gi`
-    * `--cpu=2`
+    * `--memory=4Gi`
+    * `--cpu=1`
     * `--allow-unauthenticated` (Allows public access to the service URL)
     * **Note:** The memory (8Gi) and CPU (2) settings are relatively high. You might want to adjust these values in the `deploy_GCP.bash` script if your application requires fewer resources.
 * **Service URL:** Upon successful deployment, the script (via `gcloud`) will output the **Service URL**. **Copy this URL**, as you will need it for the client.
+* **IMPORTANT:** if you want to send the actual image to the server so that the server will handle the embedding part, you should deploy your image to an instance on GCP with GPU (required by DeepFace). In this case, the line 113 in deploy_GCP.bash should be replace with the following before running it (you can customize the machine settings). YOUR_GPU_TYPE and YOUR_GPU_COUNT should be set as per your requirements.
+  ```bash
+   gcloud run deploy $YOUR_SERVICE_NAME  --image=$SELECTED_IMAGE_PATH  --region=$LOCATION --platform=managed --memory=8Gi --cpu=2 --allow-unauthenticated --accelerator type=YOUR_GPU_TYPE,count=YOUR_GPU_COUNT
+  ```
 
 ### 7. Configure IAM Permissions (Crucial!)
 

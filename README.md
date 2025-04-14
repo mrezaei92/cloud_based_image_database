@@ -155,6 +155,9 @@ Push the built Docker image to Google Cloud Artifact Registry. The `push_docker.
     * Configure Docker to authenticate with your Artifact Registry.
     * Tag your local image with the full Artifact Registry path (e.g., `us-central1-docker.pkg.dev/YOUR_PROJECT_ID/my-docker-repo/face-search-server:latest`).
     * Push the tagged image to Artifact Registry.
+ 
+* **IMPORTANT:** If you don't have access to an instance on GCP with GPUs, you should let the client handle the extraction of the embedding, and query the server with the embedding. In this case, you should remove lines `tensorflow==2.13` and `deepface` from server/requirements.txt before building the Docker image.
+
 
 ### 6. Deploy the Server using Google Cloud Run
 
@@ -177,10 +180,11 @@ Deploy the container image from Artifact Registry to Cloud Run using the `deploy
     * `--allow-unauthenticated` (Allows public access to the service URL)
     * **Note:** The memory (8Gi) and CPU (2) settings are relatively high. You might want to adjust these values in the `deploy_GCP.bash` script if your application requires fewer resources.
 * **Service URL:** Upon successful deployment, the script (via `gcloud`) will output the **Service URL**. **Copy this URL**, as you will need it for the client.
-* **IMPORTANT:** if you want to send the actual image to the server so that the server will handle the embedding part, you should deploy your image to an instance on GCP with GPU (required by DeepFace). In this case, the line 113 in deploy_GCP.bash should be replace with the following before running it (you can customize the machine settings). YOUR_GPU_TYPE and YOUR_GPU_COUNT should be set as per your requirements.
+* **IMPORTANT:** if you want to send the actual image to the server so that the server will handle the embedding part, you should deploy your image to an instance on GCP with GPUs (required by DeepFace). In this case, the line 113 in deploy_GCP.bash should be replace with the following before running it (you can customize the machine settings). YOUR_GPU_TYPE and YOUR_GPU_COUNT should be set as per your requirements.
   ```bash
    gcloud run deploy $YOUR_SERVICE_NAME  --image=$SELECTED_IMAGE_PATH  --region=$LOCATION --platform=managed --memory=8Gi --cpu=2 --allow-unauthenticated --accelerator type=YOUR_GPU_TYPE,count=YOUR_GPU_COUNT
   ```
+    
 
 ### 7. Configure IAM Permissions (Crucial!)
 
@@ -212,5 +216,5 @@ The client is a Streamlit web application located in the `client/` directory.
     * Upload a query face image.
     * Click the button to send the request. The client allows choosing between:
         * Sending the **raw image** (uses the `/faceimage` endpoint on the server, server handles embedding).
-        * Sending the **embedding** (uses the `/embed` endpoint on the server, client computes embedding first).
+        * Sending the **embedding** (uses the `/embed` endpoint on the server, client computes embedding first). In this case, it will use DeepFace library. 
     * The retrieved similar images from the database will be displayed.

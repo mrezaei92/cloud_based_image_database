@@ -218,3 +218,4 @@ The client is a Streamlit web application located in the `client/` directory.
         * Sending the **raw image** (uses the `/faceimage` endpoint on the server, server handles embedding).
         * Sending the **embedding** (uses the `/embed` endpoint on the server, client computes embedding first). In this case, it will use DeepFace library. 
     * The retrieved similar images from the database will be displayed.
+    * If the query image can not be identified based on the images in the database, the client will show no images, and will print out the message that the query image can not be identified.

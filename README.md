@@ -133,6 +133,8 @@ Now, build the Docker image for the server application located in the `server/` 
     ```bash
     docker buildx build --platform linux/amd64 -t MY_IMAGE_NAME server
     ```
+* **IMPORTANT:** If you don't have access to an instance on GCP with GPUs, you should let the client handle the extraction of the embedding, and query the server with the embedding. In this case, you should remove lines `tensorflow==2.13` and `deepface` from server/requirements.txt before building the Docker image.
+
 
 ### 5. Push the Server Image to Artifact Registry
 
@@ -156,8 +158,6 @@ Push the built Docker image to Google Cloud Artifact Registry. The `push_docker.
     * Tag your local image with the full Artifact Registry path (e.g., `us-central1-docker.pkg.dev/YOUR_PROJECT_ID/my-docker-repo/face-search-server:latest`).
     * Push the tagged image to Artifact Registry.
  
-* **IMPORTANT:** If you don't have access to an instance on GCP with GPUs, you should let the client handle the extraction of the embedding, and query the server with the embedding. In this case, you should remove lines `tensorflow==2.13` and `deepface` from server/requirements.txt before building the Docker image.
-
 
 ### 6. Deploy the Server using Google Cloud Run
 

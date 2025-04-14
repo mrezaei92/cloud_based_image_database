@@ -1,0 +1,10 @@
+tensorflow==2.13
+fastapi
+uvicorn[standard]
+Pillow
+google-cloud-aiplatform
+google-cloud-storage
+deepface
+numpy
+python-multipart
+streamlit

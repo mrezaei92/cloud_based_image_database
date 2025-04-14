@@ -15,13 +15,13 @@ from typing import List, Any
 import math
 
 # --- Some Global Vars ---
-PROJECT_ID = "mygcp-456216"  
-REGION = "europe-west2"           
-INDEX_ENDPOINT_ID = "3452941500239839232" 
-DEPLOYED_INDEX_ID = "deploy_indexendpoint_1744493199600"
+PROJECT_ID = ""
+REGION = ""
+INDEX_ENDPOINT_ID = ""
+DEPLOYED_INDEX_ID = ""
 
-BUCKET_NAME = "faceverification_me"
-DATASET_ADD = "CelebrityFacesmall/"
+BUCKET_NAME = ""  
+DATASET_ADD = ""
 
 
 NUM_NEIGHBORS = 5 # used for performing nearsest neighbor vector search using Vetrex AI

@@ -104,22 +104,37 @@ Configure Vertex AI Vector Search by creating an Index and an Index Endpoint.
     * Click `DEPLOY`.
     * **Note:** Linking the index to the endpoint can take 10-30 minutes or more. Wait until the deployment is complete and the endpoint shows the deployed index.
 
-### 3. Build the Server Docker Image
 
-Build the Docker image for the server application located in the `server/` directory.
+### 3. Configure Server Settings
+
+Before building the server's Docker image, you **must** update the configuration variables in the `server/utils.py` file to match your GCP environment setup.
+
+* **Edit the file:** Open `server/utils.py` in a text editor.
+* **Update the following variables:**
+    * `PROJECT_ID`: Set this to your Google Cloud Project ID.
+    * `REGION`: Set this to the GCP region where you created your Vertex AI Index Endpoint (e.g., 'us-central1').
+    * `INDEX_ENDPOINT_ID`: Set this to the numerical ID of the Vertex AI Index Endpoint you created in Step 2.
+    * `DEPLOYED_INDEX_ID`: Set this to the ID you assigned to the deployed index when linking the Index to the Endpoint in Step 2 (e.g., 'deployed_celebrity_index_001').
+    * `BUCKET_NAME`: Set this to the name of the GCS bucket where you uploaded your dataset (e.g., 'faceverification_me').
+    * `DATASET_ADD`: Set this to the relative path *within* the bucket where the image folders are located (e.g., 'CelebrityFacesmall/'). Make sure it ends with a `/`.
+    * `NUM_NEIGHBORS`: (Optional) Adjust the number of similar images (neighbors) the search should return. The default is 5.
+
+* **Save the changes** to `server/utils.py`.
+
+### 4. Build the Server Docker Image
+
+Now, build the Docker image for the server application located in the `server/` directory. This image will include the configuration changes you just made.
 
 * **On Linux:**
     ```bash
-    docker build -t MY_IMAGE server
+    docker build -t MY_IMAGE_NAME server
     ```
 * **On Mac (Apple Silicon M1/M2/M3):** You might need `buildx` to build for the target `linux/amd64` architecture used by Cloud Run.
     ```bash
-    docker buildx build --platform linux/amd64 -t MY_IMAGE server
+    docker buildx build --platform linux/amd64 -t MY_IMAGE_NAME server
     ```
 
-Replace `MY_IMAGE` with a suitable name for your image. It's good practice to include your project ID and potentially a version tag.
-
-### 4. Push the Server Image to Artifact Registry
+### 5. Push the Server Image to Artifact Registry
 
 Push the built Docker image to Google Cloud Artifact Registry. The `push_docker.bash` script automates this process, including tagging the image, creating the Artifact Registry repository if it doesn't exist, and handling Docker authentication with GCP.
 
@@ -141,7 +156,7 @@ Push the built Docker image to Google Cloud Artifact Registry. The `push_docker.
     * Tag your local image with the full Artifact Registry path (e.g., `us-central1-docker.pkg.dev/YOUR_PROJECT_ID/my-docker-repo/face-search-server:latest`).
     * Push the tagged image to Artifact Registry.
 
-### 5. Deploy the Server using Google Cloud Run
+### 6. Deploy the Server using Google Cloud Run
 
 Deploy the container image from Artifact Registry to Cloud Run using the `deploy_GCP.bash` script. This script automates the deployment process.
 
@@ -163,7 +178,7 @@ Deploy the container image from Artifact Registry to Cloud Run using the `deploy
     * **Note:** The memory (8Gi) and CPU (2) settings are relatively high. You might want to adjust these values in the `deploy_GCP.bash` script if your application requires fewer resources.
 * **Service URL:** Upon successful deployment, the script (via `gcloud`) will output the **Service URL**. **Copy this URL**, as you will need it for the client.
 
-### 6. Configure IAM Permissions (Crucial!)
+### 7. Configure IAM Permissions (Crucial!)
 
 The Cloud Run service needs permission to access other GCP services (GCS for images, Vertex AI for vector search). By default, Cloud Run services run using the **Compute Engine default service account**. You must grant this account the necessary roles.
 

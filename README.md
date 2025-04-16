@@ -72,6 +72,7 @@ First, prepare the image dataset locally, generate embeddings, and then upload e
     * Your GCS Bucket Name (e.g., `my-face-search-bucket`)
     * The local folder to upload (use `DEST_DATASET`)
     * Your GCP Project ID
+    * GCP Location: The region for your bucket (e.g., `us-central1`).
 
     Make note of the GCS path where the `embeddings/embeddings.json` file is uploaded (e.g., `gs://my-face-search-bucket/DEST_DATASET/embeddings/`). You'll need this for the next step.
 

@@ -61,6 +61,7 @@ read -p "Enter the path to the local folder you want to upload: " LOCAL_FOLDER_P
 
 read -p "Enter the project ID: " PROJECT_ID
 
+read -p "Enter the GCP location of the bucket (e.g., us-central1, europe-west2): " LOCATION
 
 
 echo "-------------------------------------------"
@@ -110,16 +111,26 @@ echo "-------------------------------------------"
 echo "Attempting to create bucket: $GCS_BUCKET_URI"
 echo "-------------------------------------------"
 
-# --- Create Bucket ---
-# Use gsutil to create the bucket.
-gsutil mb "$GCS_BUCKET_URI"
+
+echo "Checking if bucket $GCS_BUCKET_URI exists..."
+
+gsutil ls -b "$GCS_BUCKET_URI" > /dev/null 2>&1
+
 if [[ $? -ne 0 ]]; then
+  echo "Bucket $GCS_BUCKET_URI does not exist or is not accessible. Attempting to create..."
+  gsutil mb -l "$LOCATION" -b on "$GCS_BUCKET_URI"
+
+  if [[ $? -ne 0 ]]; then
     echo "Error: Failed to create bucket $GCS_BUCKET_URI."
-    echo "Possible reasons: Bucket name already exists, insufficient permissions, or invalid name."
+    echo "Possible reasons: Insufficient permissions, invalid name, project issue, region conflict, or gsutil configuration error."
     exit 1
+  else
+    echo "Bucket $GCS_BUCKET_URI created successfully."
+  fi
+else
+  echo "Bucket $GCS_BUCKET_URI already exists."
 fi
-echo "Bucket $GCS_BUCKET_URI created successfully."
-echo "-------------------------------------------"
+
 
 
 echo "-------------------------------------------"
